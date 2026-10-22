@@ -1,0 +1,19 @@
+[package]
+name = "bptree-wal"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.80"
+license = "Apache-2.0"
+description = "Page-based on-disk B+tree with a redo write-ahead log that survives kill -9"
+repository = "https://github.com/federiconbaez/bptree-wal"
+keywords = ["btree", "wal", "storage", "database", "crash-recovery"]
+categories = ["database-implementations"]
+
+[dependencies]
+crc32fast = "1"
+
+[dev-dependencies]
+proptest = "1"
+
+[profile.release]
+debug = 1
