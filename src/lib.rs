@@ -13,6 +13,7 @@
 
 pub mod page;
 pub mod wal;
+pub mod workload;
 
 use page::{Meta, Node, MAX_KEY, MAX_VALUE, PAGE_SIZE};
 use std::collections::{BTreeSet, HashMap};
