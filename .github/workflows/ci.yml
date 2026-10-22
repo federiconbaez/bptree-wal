@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+
+  test:
+    name: test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Unit, model and recovery tests
+        run: cargo test
+      - name: SIGKILL crash test, 5 more rounds in release
+        run: for i in 1 2 3 4 5; do cargo test -q --release --test recovery sigkill; done
+      - name: Bench (informational)
+        run: cargo run -q --release -- bench "$RUNNER_TEMP/bench" 100000
